@@ -20,7 +20,8 @@ const LogPrefix = {
   DownloadManager: 'DownloadManager',
   ExtraGameInfo: 'ExtraGameInfo',
   Sideload: 'Sideload',
-  LogUploader: 'LogUploader'
+  LogUploader: 'LogUploader',
+  CloudSaves: 'CloudSaves'
 }
 type LogPrefix = (typeof LogPrefix)[keyof typeof LogPrefix]
 

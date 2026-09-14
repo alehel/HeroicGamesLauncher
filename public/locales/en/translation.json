@@ -162,6 +162,8 @@
         },
         "sync": {
             "error": "Invalid Path",
+            "force_download_warning": "Local saves will be erased. Do you want to proceed?",
+            "force_upload_warning": "Cloud saves will be overwritten. Do you want to proceed?",
             "title": "Choose the saves directory"
         },
         "update": "Update",
@@ -1012,6 +1014,50 @@
             "name": "BattlEye AntiCheat Runtime"
         },
         "clear-cache": "Clear Heroic Cache",
+        "cloudstorage": {
+            "accesskey": "Access Key ID",
+            "bucket": {
+                "placeholder": "Name of an existing bucket",
+                "title": "Bucket"
+            },
+            "endpoint": {
+                "placeholder": "Leave empty for AWS S3, e.g. https://s3.eu-central-1.wasabisys.com",
+                "title": "Endpoint URL"
+            },
+            "game": {
+                "autosync": "Sync saves to cloud storage on game launch and exit",
+                "configure": "Configure one in Settings > Advanced",
+                "detect": "Use the save folder detected by the store (click)",
+                "folder": "Save folder to sync with cloud storage",
+                "help": {
+                    "part1": "Saves are downloaded before the game starts and uploaded after it exits. For each file, the newer copy wins; files are never deleted.",
+                    "part2": "This works independently of the store's own cloud saves, so it can be used for games without cloud save support (Amazon, sideloaded, ...).",
+                    "part3": "Saves are stored under <folder>/<store>/<game id>/ in your bucket."
+                },
+                "not_configured": "No cloud storage provider is configured yet.",
+                "title": "Sync to Cloud Storage"
+            },
+            "help": {
+                "description": "Sync game saves with your own S3-compatible object storage (AWS S3, MinIO, Backblaze B2, Cloudflare R2, Wasabi, ...). Once configured, enable \"Sync saves to cloud storage\" in the Cloud Saves Sync tab of a game to use it. Credentials are stored encrypted when your system supports it."
+            },
+            "pathstyle": "Use path-style addressing (required by MinIO and some other providers)",
+            "prefix": "Folder inside the bucket (optional)",
+            "provider": {
+                "none": "Disabled",
+                "s3": "S3-compatible storage",
+                "title": "Cloud Storage for Save Sync"
+            },
+            "region": "Region",
+            "secret": {
+                "placeholder": "Enter your secret access key here",
+                "placeholder_saved": "Key saved — type to replace, clear to remove",
+                "title": "Secret Access Key"
+            },
+            "test": "Test Connection",
+            "test_failed": "Failed: {{error}}",
+            "test_success": "Connection successful",
+            "testing": "Testing..."
+        },
         "copiedToClipboard": "Copied to Clipboard!",
         "copyToClipboard": "Copy All Settings to Clipboard",
         "custom_css": {

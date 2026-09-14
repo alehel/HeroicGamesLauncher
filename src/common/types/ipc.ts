@@ -6,6 +6,10 @@ import type {
   AntiCheatInfo,
   AppSettings,
   ButtonOptions,
+  CloudStorageConfigUpdate,
+  CloudStorageConfigView,
+  CloudStorageSyncArgs,
+  CloudStorageTestResult,
   ConnectivityStatus,
   DialogType,
   DiskSpaceData,
@@ -356,6 +360,12 @@ interface AsyncIPCFunctions {
   getGogWishlist: () => Promise<string[]>
   getGmgDiscounts: (currencyCode?: string) => Promise<CatalogProduct[]>
   getHumbleDiscounts: (currencyCode?: string) => Promise<CatalogProduct[]>
+  'cloudStorage.getConfig': () => Promise<CloudStorageConfigView>
+  'cloudStorage.setConfig': (config: CloudStorageConfigUpdate) => Promise<void>
+  'cloudStorage.testConnection': (
+    config: CloudStorageConfigUpdate
+  ) => Promise<CloudStorageTestResult>
+  'cloudStorage.syncSaves': (args: CloudStorageSyncArgs) => Promise<string>
   'steamgriddb.hasApiKey': () => Promise<boolean>
   'steamgriddb.setApiKey': (key: string) => Promise<void>
   'steamgriddb.searchGame': (

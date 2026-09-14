@@ -139,6 +139,57 @@ export interface AppSettings extends GameSettings {
   verboseLogs: boolean
   showValveProton: boolean
   steamGridDbApiKey: string
+  cloudStorage: CloudStorageConfig
+}
+
+export type CloudStorageProviderName = 'none' | 's3'
+
+/**
+ * Configuration for the generic cloud storage save sync.
+ * Currently only S3-compatible object storage is supported (AWS S3, MinIO,
+ * Backblaze B2, Cloudflare R2, Wasabi, ...)
+ */
+export interface CloudStorageConfig {
+  provider: CloudStorageProviderName
+  /** Custom endpoint URL, empty for AWS S3 */
+  endpoint: string
+  region: string
+  bucket: string
+  /** Optional key prefix ("folder") inside the bucket */
+  prefix: string
+  accessKeyId: string
+  /** Stored encrypted (when `safeStorage` is available), never sent to the frontend */
+  secretAccessKey: string
+  /** Use path-style addressing (required by MinIO and some other providers) */
+  forcePathStyle: boolean
+}
+
+/** What the frontend gets to see: everything except the secret itself */
+export type CloudStorageConfigView = Omit<
+  CloudStorageConfig,
+  'secretAccessKey'
+> & {
+  hasSecretAccessKey: boolean
+}
+
+/** What the frontend sends: the secret is optional (undefined = keep current) */
+export type CloudStorageConfigUpdate = Omit<
+  CloudStorageConfig,
+  'secretAccessKey'
+> & {
+  secretAccessKey?: string
+}
+
+export interface CloudStorageSyncArgs {
+  appName: string
+  runner: Runner
+  path: string
+  arg: string
+}
+
+export interface CloudStorageTestResult {
+  success: boolean
+  message: string
 }
 
 export type LibraryTopSectionOptions =
@@ -263,6 +314,11 @@ export interface GameSettings {
   wrapperOptions: WrapperVariable[]
   savesPath: string
   gogSaves?: GOGCloudSavesLocation[]
+  // Sync the game's save folder with the user-configured cloud storage
+  // provider (see `AppSettings.cloudStorage`), independent of the store's
+  // own cloud save support
+  syncSavesToCloudStorage: boolean
+  cloudStorageSavesPath: string
   beforeLaunchScriptPath: string
   afterLaunchScriptPath: string
   disableUMU: boolean

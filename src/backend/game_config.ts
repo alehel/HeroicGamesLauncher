@@ -279,7 +279,9 @@ class GameConfigV0 extends GameConfig {
       verboseLogs,
       advertiseAvxForRosetta,
       enableQuickSavesMenu: false,
-      steamRuntime: false
+      steamRuntime: false,
+      syncSavesToCloudStorage: false,
+      cloudStorageSavesPath: ''
     } as GameSettings
 
     let gameSettings = {} as GameSettings

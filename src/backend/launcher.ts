@@ -49,6 +49,7 @@ import nileSetup from './storeManagers/nile/setup'
 import { spawn, spawnSync } from 'child_process'
 import shlex from 'shlex'
 import { isOnline } from './online_monitor'
+import { syncCloudStorageSaves } from './cloud_saves'
 import { showDialogBoxModalAuto } from './dialog/dialog'
 import { legendarySetup } from './storeManagers/legendary/setup'
 import { libraryManagerMap } from 'backend/storeManagers'
@@ -125,7 +126,13 @@ const launchEventCallback: (args: LaunchParams) => StatusPromise = async ({
   }
 
   const gameSettings = await game.getSettings()
-  const { autoSyncSaves, savesPath, gogSaves = [] } = gameSettings
+  const {
+    autoSyncSaves,
+    savesPath,
+    gogSaves = [],
+    syncSavesToCloudStorage,
+    cloudStorageSavesPath
+  } = gameSettings
 
   if (!launchArguments && gameSettings.lastUsedLaunchOption) {
     launchArguments = gameSettings.lastUsedLaunchOption
@@ -157,6 +164,31 @@ const launchEventCallback: (args: LaunchParams) => StatusPromise = async ({
       logError(
         `Error while downloading saves for ${title}. ${error}`,
         LogPrefix.Backend
+      )
+    }
+  }
+
+  if (syncSavesToCloudStorage && isOnline()) {
+    sendGameStatusUpdate({
+      appName,
+      runner,
+      status: 'syncing-saves'
+    })
+    logInfo(
+      `Downloading saves for ${title} from cloud storage`,
+      LogPrefix.CloudSaves
+    )
+    try {
+      await syncCloudStorageSaves({
+        appName,
+        runner,
+        path: cloudStorageSavesPath,
+        arg: '--skip-upload'
+      })
+    } catch (error) {
+      logError(
+        `Error while downloading saves for ${title} from cloud storage. ${error}`,
+        LogPrefix.CloudSaves
       )
     }
   }
@@ -309,6 +341,31 @@ const launchEventCallback: (args: LaunchParams) => StatusPromise = async ({
       logError(
         `Error uploading saves for ${title}. Error: ${error}`,
         LogPrefix.Backend
+      )
+    }
+  }
+
+  if (syncSavesToCloudStorage && isOnline()) {
+    sendGameStatusUpdate({
+      appName,
+      runner,
+      status: 'syncing-saves'
+    })
+    logInfo(
+      `Uploading saves for ${title} to cloud storage`,
+      LogPrefix.CloudSaves
+    )
+    try {
+      await syncCloudStorageSaves({
+        appName,
+        runner,
+        path: cloudStorageSavesPath,
+        arg: '--skip-download'
+      })
+    } catch (error) {
+      logError(
+        `Error uploading saves for ${title} to cloud storage. Error: ${error}`,
+        LogPrefix.CloudSaves
       )
     }
   }

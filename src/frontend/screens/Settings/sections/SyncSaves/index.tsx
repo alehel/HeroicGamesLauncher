@@ -6,6 +6,7 @@ import SettingsContext from '../../SettingsContext'
 import { defaultWineVersion } from '../..'
 import GOGSyncSaves from './gog'
 import LegendarySyncSaves from './legendary'
+import CloudStorageSyncSaves from './cloudStorage'
 import { ToggleSwitch } from 'frontend/components/UI'
 
 const SyncSaves = () => {
@@ -48,8 +49,10 @@ const SyncSaves = () => {
     )
   }
 
+  let storeSyncSaves: React.ReactNode = null
+
   if (runner === 'legendary') {
-    return (
+    storeSyncSaves = (
       <LegendarySyncSaves
         featureSupported={!!gameInfo?.cloud_save_enabled}
         savesPath={savesPath}
@@ -65,7 +68,7 @@ const SyncSaves = () => {
   }
 
   if (runner === 'gog') {
-    return (
+    storeSyncSaves = (
       <GOGSyncSaves
         featureSupported={!!gameInfo?.cloud_save_enabled}
         isLinuxNative={gameInfo?.install.platform === 'linux'}
@@ -79,7 +82,12 @@ const SyncSaves = () => {
     )
   }
 
-  return <></>
+  return (
+    <>
+      {storeSyncSaves}
+      {runner && <CloudStorageSyncSaves syncCommands={syncCommands} />}
+    </>
+  )
 }
 
 export default SyncSaves

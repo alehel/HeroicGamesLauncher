@@ -105,6 +105,13 @@ export const deleteUploadedLogFile = makeHandlerInvoker('deleteUploadedLogFile')
 export const logFileUploadedSlot = frontendListenerSlot('logFileUploaded')
 export const logFileUploadDeletedSlot = frontendListenerSlot('logFileUploadDeleted')
 export const isIntelMac = makeHandlerInvoker('isIntelMac')
+export const cloudStorage = {
+  getConfig: makeHandlerInvoker('cloudStorage.getConfig'),
+  setConfig: makeHandlerInvoker('cloudStorage.setConfig'),
+  testConnection: makeHandlerInvoker('cloudStorage.testConnection'),
+  syncSaves: makeHandlerInvoker('cloudStorage.syncSaves')
+}
+
 export const steamgriddb = {
   hasApiKey: makeHandlerInvoker('steamgriddb.hasApiKey'),
   setApiKey: makeHandlerInvoker('steamgriddb.setApiKey'),

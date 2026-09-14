@@ -28,7 +28,8 @@ import {
   HideWindowOnProtocolLaunch,
   ResetHeroic,
   GamePadDelayRepeat,
-  SteamGridDbApiKey
+  SteamGridDbApiKey,
+  CloudStorageSaves
 } from '../../components'
 import DisableGOGPresence from '../../components/DisableGOGPresence'
 
@@ -175,6 +176,11 @@ export default function AdvancedSetting() {
 
       <div className="advancedSetting">
         <SteamGridDbApiKey />
+        <hr />
+      </div>
+
+      <div className="advancedSetting">
+        <CloudStorageSaves />
         <hr />
       </div>
 

@@ -82,8 +82,9 @@ export default function GamesSettings() {
   const isWin = platform === 'win32'
   const isMac = platform === 'darwin'
   const isCrossover = wineVersion?.type === 'crossover'
-  const showCloudSavesTab =
-    gameInfo?.runner === 'gog' || gameInfo?.runner === 'legendary'
+  // Store cloud saves only exist for GOG/Epic, but the cloud storage sync
+  // works for every runner
+  const showCloudSavesTab = !!gameInfo?.runner
   const isBrowserGame = gameInfo?.install.platform === 'Browser'
   const isSideloaded = gameInfo?.runner === 'sideload'
 
