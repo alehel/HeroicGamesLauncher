@@ -134,7 +134,7 @@ export async function scanLocalFiles(dir: string): Promise<LocalFile[]> {
     for (const entry of entries) {
       const absPath = join(current, entry.name)
       if (entry.isSymbolicLink()) {
-        logDebug(['Skipping symlink', absPath], LogPrefix.CloudSaves)
+        logDebug(['Skipping symlink', absPath], LogPrefix.CloudStorage)
         continue
       }
       if (entry.isDirectory()) {
@@ -200,7 +200,7 @@ async function describeRemoteObject(
   } catch (error) {
     logWarning(
       [`Could not read metadata of ${object.key}:`, error],
-      LogPrefix.CloudSaves
+      LogPrefix.CloudStorage
     )
   }
 
@@ -443,7 +443,7 @@ export async function syncFolder(
       `${plan.uploads.length} to upload,`,
       `${plan.unchanged.length} unchanged`
     ],
-    LogPrefix.CloudSaves
+    LogPrefix.CloudStorage
   )
 
   const result = await executeSyncPlan(
@@ -456,9 +456,9 @@ export async function syncFolder(
   )
   const report = formatSyncResult(mode, result)
   if (result.errors.length) {
-    logWarning(report, LogPrefix.CloudSaves)
+    logWarning(report, LogPrefix.CloudStorage)
   } else {
-    logInfo(report, LogPrefix.CloudSaves)
+    logInfo(report, LogPrefix.CloudStorage)
   }
   return report
 }

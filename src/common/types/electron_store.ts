@@ -14,7 +14,8 @@ import {
   WikiInfo,
   GameInfo,
   WindowProps,
-  UploadedLogData
+  UploadedLogData,
+  CloudStorageConfig
 } from 'common/types'
 import { UserData } from 'common/types/gog'
 import { NileUserData } from './nile'
@@ -90,6 +91,9 @@ export interface StoreStructure {
   downloadManager: {
     queue: DMQueueElement[]
     finished: DMQueueElement[]
+  }
+  cloudStorageStore: {
+    config: CloudStorageConfig
   }
   gogSyncStore: {
     [appName: string]: {

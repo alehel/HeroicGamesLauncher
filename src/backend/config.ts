@@ -377,16 +377,6 @@ class GlobalConfigV0 extends GlobalConfig {
       showValveProton: false,
       steamGridDbApiKey: '',
       disableGOGPresence: false,
-      cloudStorage: {
-        provider: 'none',
-        endpoint: '',
-        region: '',
-        bucket: '',
-        prefix: 'heroic-saves',
-        accessKeyId: '',
-        secretAccessKey: '',
-        forcePathStyle: false
-      },
       syncSavesToCloudStorage: false
     }
     // @ts-expect-error TODO: We need to settle on *one* place to define settings defaults

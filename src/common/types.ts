@@ -139,7 +139,6 @@ export interface AppSettings extends GameSettings {
   verboseLogs: boolean
   showValveProton: boolean
   steamGridDbApiKey: string
-  cloudStorage: CloudStorageConfig
 }
 
 export type CloudStorageProviderName = 'none' | 's3'
@@ -147,7 +146,9 @@ export type CloudStorageProviderName = 'none' | 's3'
 /**
  * Configuration for the generic cloud storage save sync.
  * Currently only S3-compatible object storage is supported (AWS S3, MinIO,
- * Backblaze B2, Cloudflare R2, Wasabi, ...)
+ * Backblaze B2, Cloudflare R2, Wasabi, ...).
+ * Stored in its own electron-store (not in the app settings) so the
+ * credentials never reach the renderer or the log file.
  */
 export interface CloudStorageConfig {
   provider: CloudStorageProviderName
@@ -158,7 +159,7 @@ export interface CloudStorageConfig {
   /** Optional key prefix ("folder") inside the bucket */
   prefix: string
   accessKeyId: string
-  /** Stored encrypted (when `safeStorage` is available), never sent to the frontend */
+  /** Encrypted at rest (when `safeStorage` is available), never sent to the frontend */
   secretAccessKey: string
   /** Use path-style addressing (required by MinIO and some other providers) */
   forcePathStyle: boolean

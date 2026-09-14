@@ -15,11 +15,7 @@ import {
   getCloudStorageConfigView
 } from './config'
 
-export {
-  getCloudStorageConfig,
-  getCloudStorageConfigView,
-  setCloudStorageConfig
-}
+export { getCloudStorageConfigView, setCloudStorageConfig }
 
 function createCloudStorageProvider(
   config: CloudStorageConfig
@@ -59,14 +55,14 @@ export async function syncCloudStorageSaves({
 
   logInfo(
     `Syncing saves of ${appName} (${runner}) with ${config.provider} storage`,
-    LogPrefix.CloudSaves
+    LogPrefix.CloudStorage
   )
   return syncFolder(provider, path, keyPrefix, mode)
 }
 
-export async function testCloudStorageConnection(
-  config: CloudStorageConfig
-): Promise<CloudStorageTestResult> {
+/** Checks that the stored configuration can reach the bucket */
+export async function testCloudStorageConnection(): Promise<CloudStorageTestResult> {
+  const config = getCloudStorageConfig()
   if (!isCloudStorageConfigured(config)) {
     return { success: false, message: 'Provider or bucket not set' }
   }
@@ -76,7 +72,7 @@ export async function testCloudStorageConnection(
   } catch (error) {
     logError(
       ['Cloud storage connection test failed:', error],
-      LogPrefix.CloudSaves
+      LogPrefix.CloudStorage
     )
     return { success: false, message: describeError(error) }
   }

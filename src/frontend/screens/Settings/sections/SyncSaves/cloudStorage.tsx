@@ -140,6 +140,14 @@ export default function CloudStorageSyncSaves({ syncCommands }: Props) {
         </div>
       )}
 
+      <div className="defaults-hint">
+        <FontAwesomeIcon icon={faExclamationTriangle} color={'yellow'} />
+        {t(
+          'settings.saves.warning',
+          'Cloud Saves feature is in Beta, please backup your saves before syncing (in case something goes wrong)'
+        )}
+      </div>
+
       {showOutput && (
         <ProgressDialog
           title={t('settings.cloudstorage.game.title', 'Sync to Cloud Storage')}
@@ -171,8 +179,8 @@ export default function CloudStorageSyncSaves({ syncCommands }: Props) {
             >
               {isDetecting
                 ? t(
-                    'info.save-sync.searching',
-                    'Trying to detect the correct save folder (click to cancel)'
+                    'settings.cloudstorage.game.detecting',
+                    'Detecting the save folder...'
                   )
                 : t(
                     'settings.cloudstorage.game.detect',

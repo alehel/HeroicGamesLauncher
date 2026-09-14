@@ -49,7 +49,7 @@ import nileSetup from './storeManagers/nile/setup'
 import { spawn, spawnSync } from 'child_process'
 import shlex from 'shlex'
 import { isOnline } from './online_monitor'
-import { syncCloudStorageSaves } from './cloud_saves'
+import { syncCloudStorageSaves } from './cloud_storage'
 import { showDialogBoxModalAuto } from './dialog/dialog'
 import { legendarySetup } from './storeManagers/legendary/setup'
 import { libraryManagerMap } from 'backend/storeManagers'
@@ -176,7 +176,7 @@ const launchEventCallback: (args: LaunchParams) => StatusPromise = async ({
     })
     logInfo(
       `Downloading saves for ${title} from cloud storage`,
-      LogPrefix.CloudSaves
+      LogPrefix.CloudStorage
     )
     try {
       await syncCloudStorageSaves({
@@ -188,7 +188,7 @@ const launchEventCallback: (args: LaunchParams) => StatusPromise = async ({
     } catch (error) {
       logError(
         `Error while downloading saves for ${title} from cloud storage. ${error}`,
-        LogPrefix.CloudSaves
+        LogPrefix.CloudStorage
       )
     }
   }
@@ -353,7 +353,7 @@ const launchEventCallback: (args: LaunchParams) => StatusPromise = async ({
     })
     logInfo(
       `Uploading saves for ${title} to cloud storage`,
-      LogPrefix.CloudSaves
+      LogPrefix.CloudStorage
     )
     try {
       await syncCloudStorageSaves({
@@ -365,7 +365,7 @@ const launchEventCallback: (args: LaunchParams) => StatusPromise = async ({
     } catch (error) {
       logError(
         `Error uploading saves for ${title} to cloud storage. Error: ${error}`,
-        LogPrefix.CloudSaves
+        LogPrefix.CloudStorage
       )
     }
   }

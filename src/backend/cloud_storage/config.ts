@@ -1,14 +1,10 @@
-import { GlobalConfig } from 'backend/config'
-import {
-  decryptSecret,
-  encryptSecret,
-  isEncryptedSecret
-} from 'backend/utils/secure_secret'
+import { decryptSecret, encryptSecret } from 'backend/utils/secure_secret'
 import type {
   CloudStorageConfig,
   CloudStorageConfigUpdate,
   CloudStorageConfigView
 } from 'common/types'
+import { cloudStorageStore } from './electronStores'
 
 const CIPHERTEXT_PREFIX = 'hcs:v1:'
 const LABEL = 'cloud storage secret access key'
@@ -24,35 +20,17 @@ const defaultCloudStorageConfig: CloudStorageConfig = {
   forcePathStyle: false
 }
 
-/** Returns the stored config with the secret still encrypted */
+/** The config as stored on disk, secret still encrypted */
 function getStoredConfig(): CloudStorageConfig {
-  const stored = GlobalConfig.get().getSettings().cloudStorage
-  return { ...defaultCloudStorageConfig, ...(stored ?? {}) }
+  return {
+    ...defaultCloudStorageConfig,
+    ...cloudStorageStore.get('config', defaultCloudStorageConfig)
+  }
 }
 
-/** Returns the config with the secret decrypted, ready to build a provider */
+/** The config with the secret decrypted, ready to build a provider */
 export function getCloudStorageConfig(): CloudStorageConfig {
   const stored = getStoredConfig()
-
-  // Migrate legacy plaintext secrets on first read
-  if (
-    stored.secretAccessKey &&
-    !isEncryptedSecret(stored.secretAccessKey, CIPHERTEXT_PREFIX)
-  ) {
-    const reEncrypted = encryptSecret(
-      stored.secretAccessKey,
-      CIPHERTEXT_PREFIX,
-      LABEL
-    )
-    if (isEncryptedSecret(reEncrypted, CIPHERTEXT_PREFIX)) {
-      GlobalConfig.get().setSetting('cloudStorage', {
-        ...stored,
-        secretAccessKey: reEncrypted
-      })
-    }
-    return stored
-  }
-
   return {
     ...stored,
     secretAccessKey: decryptSecret(
@@ -69,24 +47,21 @@ export function getCloudStorageConfigView(): CloudStorageConfigView {
   return { ...rest, hasSecretAccessKey: !!secretAccessKey }
 }
 
+/** Saves the config; an omitted secret keeps the currently stored one */
 export function setCloudStorageConfig(update: CloudStorageConfigUpdate) {
-  const current = getStoredConfig()
   const { secretAccessKey, ...rest } = update
+  const current = getStoredConfig()
 
-  const newConfig: CloudStorageConfig = {
+  cloudStorageStore.set('config', {
     ...current,
     ...rest,
     secretAccessKey:
       secretAccessKey === undefined
         ? current.secretAccessKey
         : encryptSecret(secretAccessKey.trim(), CIPHERTEXT_PREFIX, LABEL)
-  }
-
-  return GlobalConfig.get().setSetting('cloudStorage', newConfig)
+  })
 }
 
-export function isCloudStorageConfigured(
-  config: CloudStorageConfig = getStoredConfig()
-): boolean {
+export function isCloudStorageConfigured(config: CloudStorageConfig): boolean {
   return config.provider !== 'none' && !!config.bucket.trim()
 }

@@ -362,9 +362,7 @@ interface AsyncIPCFunctions {
   getHumbleDiscounts: (currencyCode?: string) => Promise<CatalogProduct[]>
   'cloudStorage.getConfig': () => Promise<CloudStorageConfigView>
   'cloudStorage.setConfig': (config: CloudStorageConfigUpdate) => Promise<void>
-  'cloudStorage.testConnection': (
-    config: CloudStorageConfigUpdate
-  ) => Promise<CloudStorageTestResult>
+  'cloudStorage.testConnection': () => Promise<CloudStorageTestResult>
   'cloudStorage.syncSaves': (args: CloudStorageSyncArgs) => Promise<string>
   'steamgriddb.hasApiKey': () => Promise<boolean>
   'steamgriddb.setApiKey': (key: string) => Promise<void>

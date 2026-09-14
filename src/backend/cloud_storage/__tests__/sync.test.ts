@@ -81,7 +81,7 @@ const remoteFile = (
   size = 10
 ): RemoteFile => ({ relPath, key: `prefix/${relPath}`, size, mtimeMs })
 
-describe('cloud_saves/sync.ts', () => {
+describe('cloud_storage/sync.ts', () => {
   describe('helpers', () => {
     test('syncModeFromArg maps store-style arguments', () => {
       expect(syncModeFromArg('--skip-upload')).toBe('download')

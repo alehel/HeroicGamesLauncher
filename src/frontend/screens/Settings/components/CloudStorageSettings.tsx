@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MenuItem } from '@mui/material'
 import {
@@ -13,78 +13,46 @@ import type {
   CloudStorageTestResult
 } from 'common/types'
 
-const emptyConfig: CloudStorageConfigUpdate = {
-  provider: 'none',
-  endpoint: '',
-  region: '',
-  bucket: '',
-  prefix: 'heroic-saves',
-  accessKeyId: '',
-  forcePathStyle: false
-}
-
-const SAVE_DEBOUNCE_MS = 600
-
 /**
  * Global configuration of the cloud storage provider used by the
- * per-game "Sync saves to cloud storage" feature
+ * per-game "Sync saves to cloud storage" feature.
+ * Like the other settings components, every change is saved immediately.
  */
-export default function CloudStorageSaves() {
+export default function CloudStorageSettings() {
   const { t } = useTranslation()
-  const [config, setConfig] = useState<CloudStorageConfigUpdate>(emptyConfig)
+  const [config, setConfig] = useState<CloudStorageConfigUpdate | null>(null)
   const [hasSecret, setHasSecret] = useState(false)
-  const [loaded, setLoaded] = useState(false)
-  const [dirty, setDirty] = useState(false)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<CloudStorageTestResult | null>(
     null
   )
-  const saveTimer = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
     void window.api.cloudStorage.getConfig().then((stored) => {
       const { hasSecretAccessKey, ...rest } = stored
       setConfig(rest)
       setHasSecret(hasSecretAccessKey)
-      setLoaded(true)
     })
   }, [])
 
-  // Persist changes shortly after the user stops typing
-  useEffect(() => {
-    if (!loaded || !dirty) return
-    if (saveTimer.current) clearTimeout(saveTimer.current)
-    saveTimer.current = setTimeout(() => {
-      void window.api.cloudStorage.setConfig(config).then(() => {
-        if (config.secretAccessKey !== undefined) {
-          setHasSecret(!!config.secretAccessKey)
-        }
-      })
-      setDirty(false)
-    }, SAVE_DEBOUNCE_MS)
-    return () => {
-      if (saveTimer.current) clearTimeout(saveTimer.current)
-    }
-  }, [config, dirty, loaded])
+  if (!config) return null
 
   const update = (patch: Partial<CloudStorageConfigUpdate>) => {
-    setConfig((current) => ({ ...current, ...patch }))
-    setDirty(true)
+    const newConfig = { ...config, ...patch }
+    setConfig(newConfig)
     setTestResult(null)
+    void window.api.cloudStorage.setConfig(newConfig).then(() => {
+      if (patch.secretAccessKey !== undefined) {
+        setHasSecret(!!patch.secretAccessKey)
+      }
+    })
   }
 
   const handleTest = async () => {
     setTesting(true)
-    // Make sure whatever is typed right now is what gets tested and saved
-    if (saveTimer.current) clearTimeout(saveTimer.current)
-    await window.api.cloudStorage.setConfig(config)
-    setDirty(false)
-    const result = await window.api.cloudStorage.testConnection(config)
-    setTestResult(result)
+    setTestResult(await window.api.cloudStorage.testConnection())
     setTesting(false)
   }
-
-  const isS3 = config.provider === 's3'
 
   const secretPlaceholder = hasSecret
     ? t(
@@ -127,7 +95,7 @@ export default function CloudStorageSaves() {
         </MenuItem>
       </SelectField>
 
-      {isS3 && (
+      {config.provider === 's3' && (
         <>
           <TextInputField
             htmlId="cloudstorage-endpoint"
@@ -217,9 +185,7 @@ export default function CloudStorageSaves() {
                   : t(
                       'settings.cloudstorage.test_failed',
                       'Failed: {{error}}',
-                      {
-                        error: testResult.message
-                      }
+                      { error: testResult.message }
                     )}
               </span>
             )}

@@ -1028,6 +1028,7 @@
                 "autosync": "Sync saves to cloud storage on game launch and exit",
                 "configure": "Configure one in Settings > Advanced",
                 "detect": "Use the save folder detected by the store (click)",
+                "detecting": "Detecting the save folder...",
                 "folder": "Save folder to sync with cloud storage",
                 "help": {
                     "part1": "Saves are downloaded before the game starts and uploaded after it exits. For each file, the newer copy wins; files are never deleted.",
